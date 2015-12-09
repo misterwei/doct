@@ -1,0 +1,46 @@
+package doct.document.command;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import doct.document.CommandContext;
+import doct.document.DeclaredCommand;
+import ognl.Ognl;
+import ognl.OgnlContext;
+
+/**
+ * {%if codition %}{%endif%}
+ * @author wei
+ *
+ */
+public class IfCommand  implements DeclaredCommand{
+
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prev, Object... params) throws Exception {
+		String[] descriptor = cmdCtx.getDescriptor();
+		Boolean result = (Boolean)Ognl.getValue(descriptor[1], ctx, ctx.getRoot());
+		if(!result){
+			cmdCtx.setNextCommand("elif|else|endif");
+		}
+		cmdCtx.put("RESULT", result);
+		return NO_OUTPUT;
+	}
+
+	public boolean doEnd(OgnlContext ctx, CommandContext cmdCtx, Object... params) throws Exception {
+		return true;
+	}
+
+	public String getStartName() {
+		return "if";
+	}
+
+	public String getEndName() {
+		return "endif";
+	}
+
+	public List<String[]> analyze(String[] parts) {
+		List<String[]> descriptors = new ArrayList<String[]>();
+		descriptors.add(parts);
+		return descriptors;
+	}
+
+}
