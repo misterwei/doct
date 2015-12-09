@@ -10,11 +10,19 @@ a document (xls, ...) template engine
 
 命令列表：
 {%set aa 10%}	#设置属性值
+
 {%get aa%}    	#获取属性值
+
 {%offset 1 1%}	#行列偏移
+
 {%offset_add 0 1%}	#行列偏移
+
 {%insert_row%}
+
 {%insert_cel%}
+
 {%for aa in list%}	#for循环
+
 {%endfor%}		#for循环结束标签
+
 {%end%}			#本行结束，之后的命令不在解析
