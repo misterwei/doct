@@ -215,6 +215,8 @@ public abstract class DocumentRenderExecutor {
 	protected void clear(OgnlContext ctx, List<CommandLine> lines) throws Exception{
 		int lineIndex = -1;
 		TextBlockInfo prev = null;
+		if(lines.isEmpty())
+			return;
 		while(lineIndex < lines.size() - 1 ){
 			lineIndex++;
 			CommandLine cmdline = lines.get(lineIndex);
