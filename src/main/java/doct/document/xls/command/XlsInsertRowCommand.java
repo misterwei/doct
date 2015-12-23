@@ -42,10 +42,12 @@ public class XlsInsertRowCommand extends AbstractCommand{
 			XlsCellInfo cellInfo = (XlsCellInfo)line.getTextInfo();
 			if(cellInfo.getSheetIndex() == sheetIndex){
 				if(cellInfo.getRowIndex() >= start && !infos.contains(cellInfo)){
-					cellInfo.setRowIndex(cellInfo.getRowIndex() + rows);
 					infos.add(cellInfo);
 				}
 			}
+		}
+		for(XlsCellInfo cellInfo : infos){
+			cellInfo.setRowIndex(cellInfo.getRowIndex() + rows);
 		}
 	}
 	
