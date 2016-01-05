@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import doct.document.CommandContext;
+import doct.document.CommandDescriptor;
 import doct.document.DeclaredCommand;
 import ognl.OgnlContext;
 
@@ -13,8 +14,8 @@ public abstract class AbstractCommand implements DeclaredCommand{
 		return true;
 	}
 
-	public List<String[]> analyze(String[] parts) {
-		List<String[]> cmds = new ArrayList<String[]>();
+	public List<CommandDescriptor> analyze(String[] parts) {
+		List<CommandDescriptor> cmds = new ArrayList<CommandDescriptor>();
 		if(parts.length > 1){
 			String[] subparts = parts[1].split("\\s+");
 			String[] newparts = new String[subparts.length + 1];
@@ -22,14 +23,15 @@ public abstract class AbstractCommand implements DeclaredCommand{
 			for(int i=0;i<subparts.length;i++){
 				newparts[i+1] = subparts[i];
 			}
-			cmds.add(newparts);
+			cmds.add(new CommandDescriptor(newparts));
 		}else{
-			cmds.add(parts);
+			cmds.add(new CommandDescriptor(parts));
 		}
 		return cmds;
 	}
 	
-	public String getEndName() {
-		return null;
+	@Override
+	public boolean isHasEnd() {
+		return false;
 	}
 }

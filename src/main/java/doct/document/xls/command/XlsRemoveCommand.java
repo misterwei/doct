@@ -25,7 +25,7 @@ import ognl.OgnlContext;
  */
 public class XlsRemoveCommand extends AbstractCommand{
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prev, Object... params) throws Exception {
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params) throws Exception {
 		Workbook workbook = (Workbook)params[0];
 		List<CommandLine> lines = (List<CommandLine>)params[1];
 		XlsCellInfo cellInfo = (XlsCellInfo)cmdCtx.getCommandLine().getTextInfo();

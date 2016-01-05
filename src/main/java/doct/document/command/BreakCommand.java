@@ -9,7 +9,7 @@ import ognl.OgnlContext;
  */
 public class BreakCommand extends AbstractCommand {
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prev, Object... params) throws Exception {
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params) throws Exception {
 		ctx.put("__break__", true);
 		cmdCtx.setNextCommand("endfor");
 		return NO_OUTPUT;

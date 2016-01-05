@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.List;
 
 import doct.document.CommandContext;
+import doct.document.CommandDescriptor;
 import doct.document.DeclaredCommand;
+import doct.document.DocumentUtils;
 import ognl.Ognl;
 import ognl.OgnlContext;
 
@@ -17,7 +19,7 @@ import ognl.OgnlContext;
  */
 public class ForCommand implements DeclaredCommand{
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prev, Object... params) throws Exception {
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params) throws Exception {
 		String[] cmdparts = cmdCtx.getDescriptor();
 		//for item in list
 		if(cmdparts.length == 4){
@@ -32,7 +34,7 @@ public class ForCommand implements DeclaredCommand{
 		Object obj = Ognl.getValue(part, ctx, ctx.getRoot());
 		int size = getSize(obj);
 		if(size == 0){
-			cmdCtx.setNextCommand(getEndName());
+			cmdCtx.setNextCommand(DocumentUtils.getEndName(this));
 		}
 		
 		return NO_OUTPUT;
@@ -107,12 +109,12 @@ public class ForCommand implements DeclaredCommand{
 		return "for";
 	}
 
-	public String getEndName() {
-		return "endfor";
+	public boolean isHasEnd() {
+		return true;
 	}
 
-	public List<String[]> analyze(String[] parts) {
-		List<String[]> descriptors = new ArrayList<String[]>();
+	public List<CommandDescriptor> analyze(String[] parts) {
+		List<CommandDescriptor> descriptors = new ArrayList<CommandDescriptor>();
 		if(parts.length > 1){
 			String[] subparts = parts[1].split("\\s+");
 			String[] newparts = new String[subparts.length + 1];
@@ -120,10 +122,10 @@ public class ForCommand implements DeclaredCommand{
 			for(int i=0;i<subparts.length;i++){
 				newparts[i+1] = subparts[i];
 			}
-			descriptors.add(newparts);
+			descriptors.add(new CommandDescriptor(newparts));
 			parts = newparts;
 		}else{
-			descriptors.add(parts);
+			descriptors.add(new CommandDescriptor(parts));
 		}
 		if(!parts[0].equals(getStartName()))
 			return descriptors;
@@ -131,7 +133,7 @@ public class ForCommand implements DeclaredCommand{
 		//设置 val = list[#__index__]
 		String prefix = parts[1].replace("#", "");
 		String[] newcmd = new String[]{"set", parts[1], parts[3]+"[#"+prefix+"_index]"};
-		descriptors.add(newcmd);
+		descriptors.add(new CommandDescriptor(newcmd));
 		return descriptors;
 	}
 

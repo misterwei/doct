@@ -18,7 +18,7 @@ import ognl.OgnlContext;
  */
 public class XlsHeightCommand extends AbstractCommand {
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prevCmdCtx, Object... params)
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params)
 			throws Exception {
 		XlsCellInfo cellInfo = (XlsCellInfo)cmdCtx.getCommandLine().getTextInfo();
 		String[] cmdparts = cmdCtx.getDescriptor();

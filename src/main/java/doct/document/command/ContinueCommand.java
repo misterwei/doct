@@ -9,7 +9,7 @@ import ognl.OgnlContext;
  */
 public class ContinueCommand extends AbstractCommand {
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prev, Object... params) throws Exception {
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params) throws Exception {
 		ctx.put("__continue__", true);
 		cmdCtx.setNextCommand("endfor");
 		return NO_OUTPUT;

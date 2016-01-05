@@ -24,7 +24,7 @@ import ognl.OgnlContext;
  */
 public class XlsStyleCommand extends AbstractCommand{
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prev, Object... params) throws Exception {
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params) throws Exception {
 		XlsCellInfo cellInfo = (XlsCellInfo)cmdCtx.getCommandLine().getTextInfo();
 		int row_index = cellInfo.getRowIndex(XlsUtil.getRowOffset(ctx));
 		int cell_index = cellInfo.getCellIndex(XlsUtil.getCellOffset(ctx));

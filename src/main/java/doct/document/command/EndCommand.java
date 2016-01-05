@@ -10,7 +10,7 @@ import ognl.OgnlContext;
  */
 public class EndCommand extends AbstractCommand {
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prev, Object... params) throws Exception {
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params) throws Exception {
 		return null;
 	}
 

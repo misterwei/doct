@@ -19,7 +19,10 @@ public abstract class DocumentRenderExecutor {
 	 * @throws Exception
 	 */
 	public void renderDocument(Map<String, Object> model) throws Exception{
-		List<CommandLine> lines = getCommandLines();
+		CommandAnalyzer commandAnalyzer = getCommandAnalyzer();
+		
+		List<CommandLine> lines = getCommandLineAnalyzer().analyze(commandAnalyzer);
+		
 		
 		//上下文
 		OgnlContext context = new OgnlContext();
@@ -35,8 +38,7 @@ public abstract class DocumentRenderExecutor {
 		
 		//命令跳转使用
 		CommandContext jumpCommand = null;
-		//上一个命令
-		CommandContext prevCommand = CommandContext.NONE;
+		
 		
 		Map<String,Object> root = model;
 		if(root == null){
@@ -66,14 +68,15 @@ public abstract class DocumentRenderExecutor {
 			
 			TextBlockInfo blockInfo = cmdline.getTextInfo();
 			try{
-				List<String[]> cmds = cmdline.getDescriptors();
+				List<CommandDescriptor> cmds = cmdline.getDescriptors();
 				while(cmdIndex < cmds.size() - 1){
 					cmdIndex ++;
-					String[] descr = cmds.get(cmdIndex);
-					String cmdName = descr[0];
+					CommandDescriptor descr = cmds.get(cmdIndex);
+					String cmdName = descr.getCommand();
 					
 					//提取匹配的Command
-					List<DeclaredCommand> declaredCmds = getDeclaredCommands();
+//					List<DeclaredCommand> declaredCmds = getDeclaredCommands();
+					DeclaredCommand declaredCommand = descr.getDeclaredCommand();
 					
 					//检测是否有命令跳转
 					if(jumpCommand != null && jumpCommand.isHasJump()){
@@ -84,16 +87,14 @@ public abstract class DocumentRenderExecutor {
 									/**
 									 * 如果略过的命令中有结尾命令则，入栈
 									 */
-									for(DeclaredCommand decmd : declaredCmds){
-										if(cmdName.equals(decmd.getStartName())){
-											if(decmd.getEndName() != null){
-												CommandContext cmdCtx = new CommandContext(cmdline, cmdIndex, cmdName, decmd.getEndName());
-												cmdCtx.setDescriptor(descr);
-												cmdCtx.setLineIndex(lineIndex);
-												commandStack.push(cmdCtx);
-											}
-											break;
+									if(declaredCommand.isHasEnd()){
+										CommandContext cmdCtx = new CommandContext(cmdline, cmdIndex, cmdName, DocumentUtils.getEndName(cmdName));
+										cmdCtx.setDescriptor(descr.getSource());
+										cmdCtx.setLineIndex(lineIndex);
+										if(!commandStack.isEmpty()){
+											cmdCtx.setParentCommand(commandStack.peek());
 										}
+										commandStack.push(cmdCtx);
 									}
 								}else {
 									/**
@@ -133,37 +134,33 @@ public abstract class DocumentRenderExecutor {
 					}
 					//跳转命令置空
 					jumpCommand = null;
-					for(DeclaredCommand decmd : declaredCmds){
-						if(cmdName.equals(decmd.getStartName())){
-							CommandContext cmdCtx = new CommandContext(cmdline, cmdIndex, cmdName, decmd.getEndName());
-							cmdCtx.setDescriptor(descr);
-							cmdCtx.setLineIndex(lineIndex);
-							if(decmd.getEndName() != null)
-								commandStack.push(cmdCtx);
-							Object temp = doCommand(decmd, context, cmdCtx, prevCommand);
+					if(cmdName.equals(declaredCommand.getStartName())){
+						CommandContext cmdCtx = new CommandContext(cmdline, cmdIndex, cmdName, DocumentUtils.getEndName(declaredCommand));
+						cmdCtx.setDescriptor(descr.getSource());
+						cmdCtx.setLineIndex(lineIndex);
+						if(!commandStack.isEmpty()){
+							cmdCtx.setParentCommand(commandStack.peek());
+						}
+						if(declaredCommand.isHasEnd())
+							commandStack.push(cmdCtx);
+						Object temp = doCommand(declaredCommand, context, cmdCtx);
+						if(cmdCtx.isHasJump()){
+							jumpCommand = cmdCtx;
+						}
+						if(temp != DeclaredCommand.NO_OUTPUT){
+							storeLineOutValue(cmdline.getId(), context, temp);
+							render(context, blockInfo);
+						}
+						
+					}else if(cmdName.equals(DocumentUtils.getEndName(declaredCommand))){
+						CommandContext cmdCtx = commandStack.peek();
+						boolean pop = doEnd(declaredCommand, context, cmdCtx);
+						if(pop){
+							commandStack.pop();
+							
+						}else{
 							if(cmdCtx.isHasJump()){
 								jumpCommand = cmdCtx;
-								prevCommand.clearAllJump();
-							}else if(prevCommand.isHasJump()){
-								//使用前一个命令进行跳转
-								jumpCommand = prevCommand;
-							}
-							if(temp != DeclaredCommand.NO_OUTPUT){
-								storeLineOutValue(cmdline.getId(), context, temp);
-								render(context, blockInfo);
-							}
-							//设置为前一个命令
-							prevCommand = cmdCtx;
-							
-						}else if(cmdName.equals(decmd.getEndName())){
-							CommandContext cmdCtx = commandStack.peek();
-							boolean pop = doEnd(decmd, context, cmdCtx);
-							if(pop){
-								commandStack.pop();
-							}else{
-								if(cmdCtx.isHasJump()){
-									jumpCommand = cmdCtx;
-								}
 							}
 						}
 					}
@@ -189,7 +186,7 @@ public abstract class DocumentRenderExecutor {
 				}
 				
 			}catch(Exception e){
-				log.error("exec command line exception ",e );
+				log.error("命令行执行失败：" + cmdline.getSource(), e);
 			}
 			
 			//重置cmdIndex
@@ -233,8 +230,8 @@ public abstract class DocumentRenderExecutor {
 	}
 	
 	
-	protected Object doCommand(DeclaredCommand cmd, OgnlContext context, CommandContext cmdCtx, CommandContext prevCmdCtx) throws Exception{
-		return cmd.doCommand(context, cmdCtx, prevCmdCtx);
+	protected Object doCommand(DeclaredCommand cmd, OgnlContext context, CommandContext cmdCtx) throws Exception{
+		return cmd.doCommand(context, cmdCtx);
 	}
 	
 	protected boolean doEnd(DeclaredCommand cmd, OgnlContext context, CommandContext cmdCtx) throws Exception{
@@ -251,7 +248,8 @@ public abstract class DocumentRenderExecutor {
 	
 	protected abstract TextBlockRender getTextBlockRender();
 	
-	protected abstract List<CommandLine> getCommandLines();
+	protected abstract CommandAnalyzer getCommandAnalyzer();
 	
-	protected abstract List<DeclaredCommand> getDeclaredCommands();
+	protected abstract CommandLineAnalyzer getCommandLineAnalyzer();
+	
 }

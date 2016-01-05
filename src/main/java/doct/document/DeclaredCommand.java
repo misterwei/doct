@@ -15,12 +15,11 @@ public interface DeclaredCommand {
 	 * 执行命令
 	 * @param ctx 上下文，模型中的值及环境中的值都可以在这里找到
 	 * @param cmdCtx 当前命令的上下文
-	 * @param prevCmdCtx 上一个命令的上下文，主要用来做 else 操作，可以用来做跳转操作
 	 * @param params 文档传参
 	 * @return
 	 * @throws Exception
 	 */
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx,CommandContext prevCmdCtx, Object ...params) throws Exception;
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object ...params) throws Exception;
 	
 	/**
 	 * 执行命令结尾
@@ -40,13 +39,13 @@ public interface DeclaredCommand {
 	 * 命令结尾，没有则返回NULL
 	 * @return
 	 */
-	public String getEndName();
+	public boolean isHasEnd();
 	
 	/**
 	 * 解析命令
 	 * @param parts
 	 * @return
 	 */
-	public List<String[]> analyze(String[] parts);
+	public List<CommandDescriptor> analyze(String[] parts);
 	
 }

@@ -4,21 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import doct.document.CommandContext;
+import doct.document.CommandDescriptor;
 import ognl.Ognl;
 import ognl.OgnlContext;
 
 public class ElifCommand extends AbstractCommand{
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prevCmdCtx, Object... params)
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params)
 			throws Exception {
-		if(!prevCmdCtx.getName().matches("if|elif")){
-			prevCmdCtx.setNextCommand("endif");
+		CommandContext parent = cmdCtx.getParentCommand();
+		if(!parent.getName().matches("if|elif")){
+			cmdCtx.setNextCommand("endif");
 			return NO_OUTPUT;
 		}
 		
-		Boolean result = (Boolean)prevCmdCtx.get("RESULT");
+		Boolean result = (Boolean)parent.get("RESULT");
 		if(result){
-			prevCmdCtx.setNextCommand("endif");
+			cmdCtx.setNextCommand("endif");
 			return NO_OUTPUT;
 		}
 		
@@ -36,9 +38,9 @@ public class ElifCommand extends AbstractCommand{
 		return "elif";
 	}
 
-	public List<String[]> analyze(String[] parts) {
-		List<String[]> descriptors = new ArrayList<String[]>();
-		descriptors.add(parts);
+	public List<CommandDescriptor> analyze(String[] parts) {
+		List<CommandDescriptor> descriptors = new ArrayList<CommandDescriptor>();
+		descriptors.add(new CommandDescriptor(parts));
 		return descriptors;
 	}
 }

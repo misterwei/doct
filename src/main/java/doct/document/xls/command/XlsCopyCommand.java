@@ -24,7 +24,7 @@ import ognl.OgnlContext;
  */
 public class XlsCopyCommand extends AbstractCommand {
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prevCmdCtx, Object... params)
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params)
 			throws Exception {
 		XlsCellInfo cellInfo = (XlsCellInfo)cmdCtx.getCommandLine().getTextInfo();
 		int row_index = cellInfo.getRowIndex(XlsUtil.getRowOffset(ctx));

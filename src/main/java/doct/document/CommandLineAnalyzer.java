@@ -13,11 +13,6 @@ public interface CommandLineAnalyzer {
 	 * @param lineText
 	 * @return
 	 */
-	public List<CommandLine> analyze();
+	public List<CommandLine> analyze(CommandAnalyzer commandAnalyzer);
 	
-	/**
-	 * 在分析命令前会先设置CommandAnalyzer
-	 * @param analyzer
-	 */
-	public void setCommandAnalyzer(CommandAnalyzer analyzer);
 }

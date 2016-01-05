@@ -11,7 +11,7 @@ import ognl.OgnlContext;
  */
 public class SetCommand extends AbstractCommand{
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prev, Object... params)  throws Exception {
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params)  throws Exception {
 		String expr1 = cmdCtx.getDescriptor()[1];
 		String expr2 = cmdCtx.getDescriptor()[2];
 		Object val = Ognl.getValue(expr2, ctx, ctx.getRoot());

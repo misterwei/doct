@@ -5,15 +5,16 @@ import ognl.OgnlContext;
 
 public class ElseCommand extends AbstractCommand{
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prevCmdCtx, Object... params)
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params)
 			throws Exception {
-		if(prevCmdCtx.getName().matches("if|elif")){
-			Boolean result = (Boolean)prevCmdCtx.get("RESULT");
+		CommandContext parent = cmdCtx.getParentCommand();
+		if(parent.getName().matches("if|elif")){
+			Boolean result = (Boolean)parent.get("RESULT");
 			if(result){
-				prevCmdCtx.setNextCommand("endif");
+				cmdCtx.setNextCommand("endif");
 			}
 		}else{
-			prevCmdCtx.setNextCommand("endif");
+			cmdCtx.setNextCommand("endif");
 		}
 		return NO_OUTPUT;
 	}

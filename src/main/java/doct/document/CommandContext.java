@@ -21,6 +21,8 @@ public class CommandContext implements Map<String,Object>{
 	
 	private String nextCommand;
 	
+	private CommandContext parentCommand;
+	
 	private Map<String,Object> _values = new HashMap<String,Object>();
 	
 	public CommandContext(CommandLine line,int index, String name, String endName) {
@@ -34,12 +36,20 @@ public class CommandContext implements Map<String,Object>{
 		return lineIndex;
 	}
 	
-	public void setLineIndex(Integer lineIndex) {
+	protected void setLineIndex(Integer lineIndex) {
 		this.lineIndex = lineIndex;
 	}
 
 	public String getNextLineId() {
 		return nextLineId;
+	}
+	
+	protected void setParentCommand(CommandContext ctx){
+		this.parentCommand = ctx;
+	}
+	
+	public CommandContext getParentCommand(){
+		return parentCommand;
 	}
 
 	/**
@@ -96,14 +106,14 @@ public class CommandContext implements Map<String,Object>{
 	}
 	
 	public String getEndName() {
-		return endName;
+		return this.endName;
 	}
 
 	public String[] getDescriptor() {
 		return descriptor;
 	}
 
-	public void setDescriptor(String[] descriptor) {
+	protected void setDescriptor(String[] descriptor) {
 		this.descriptor = descriptor;
 	}
 

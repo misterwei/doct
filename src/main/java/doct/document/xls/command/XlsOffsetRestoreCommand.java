@@ -11,7 +11,7 @@ import ognl.OgnlContext;
  */
 public class XlsOffsetRestoreCommand extends AbstractCommand{
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prev, Object... params) throws Exception {
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params) throws Exception {
 		Integer row_offset = (Integer)ctx.get("__saved_row_offset__");
 		Integer cell_offset = (Integer)ctx.get("__saved_cell_offset__");
 		

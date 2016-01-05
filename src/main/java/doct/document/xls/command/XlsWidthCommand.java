@@ -17,7 +17,7 @@ import ognl.OgnlContext;
  */
 public class XlsWidthCommand extends AbstractCommand {
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prevCmdCtx, Object... params)
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params)
 			throws Exception {
 		XlsCellInfo cellInfo = (XlsCellInfo)cmdCtx.getCommandLine().getTextInfo();
 		String[] cmdparts = cmdCtx.getDescriptor();

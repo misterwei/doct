@@ -13,7 +13,7 @@ public interface CommandAnalyzer {
 	 * @param lineText
 	 * @return
 	 */
-	public List<String[]> analyze(String line);
+	public List<CommandDescriptor> analyze(String line);
 	
 	/**
 	 * 获取所有注册的命令

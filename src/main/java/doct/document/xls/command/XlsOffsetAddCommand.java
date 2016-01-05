@@ -8,7 +8,7 @@ import ognl.OgnlContext;
 
 public class XlsOffsetAddCommand extends AbstractCommand{
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prev, Object... params) throws Exception {
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params) throws Exception {
 		String[] cmdparts = cmdCtx.getDescriptor();
 		int old_row_offset = XlsUtil.getRowOffset(ctx);
 		Integer _row_offset = (Integer)Ognl.getValue(cmdparts[1], ctx, ctx.getRoot());

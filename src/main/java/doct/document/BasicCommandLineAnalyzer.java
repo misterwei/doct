@@ -12,7 +12,6 @@ public abstract class BasicCommandLineAnalyzer implements CommandLineAnalyzer{
 	private String delimiterStart = "\\{%";
 	private String delimiterEnd = "%\\}";
 	private int idCounter = 0;
-	private CommandAnalyzer commandAnalyzer;
 	private Pattern linePattern = Pattern.compile(delimiterStart + "(.+?)" + delimiterEnd, Pattern.MULTILINE | Pattern.DOTALL);
 	private Pattern commandPattern = Pattern.compile("^([\\w\\d_]+):");
 	
@@ -21,7 +20,7 @@ public abstract class BasicCommandLineAnalyzer implements CommandLineAnalyzer{
 	 * @param text
 	 * @return
 	 */
-	public List<CommandLine> analyzeText(String text) {
+	public List<CommandLine> analyze(CommandAnalyzer commandAnalyzer, String text) {
 		TextBlockInfo textInfo = createTextBlockInfo(text);
 		Matcher m = linePattern.matcher(text);
 		while(m.find()){
@@ -46,11 +45,12 @@ public abstract class BasicCommandLineAnalyzer implements CommandLineAnalyzer{
 			textInfo.addCommandLine(cmdinfo);
 			
 			if(!commandline.trim().isEmpty()){
-				List<String[]> descrs = getCommandAnalyzer().analyze(commandline);
+				List<CommandDescriptor> descrs = commandAnalyzer.analyze(commandline);
+				
 				cmdinfo.getDescriptors().addAll(descrs);
 				if(!descrs.isEmpty()){
-					String[] part = descrs.get(descrs.size() - 1);
-					if("end".equalsIgnoreCase(part[0])){
+					CommandDescriptor part = descrs.get(descrs.size() - 1);
+					if("end".equalsIgnoreCase(part.getCommand())){
 						break;
 					}
 				}
@@ -58,14 +58,6 @@ public abstract class BasicCommandLineAnalyzer implements CommandLineAnalyzer{
 			
 		}
 		return textInfo.getCommandLines();
-	}
-	
-	public CommandAnalyzer getCommandAnalyzer() {
-		return commandAnalyzer;
-	}
-
-	public void setCommandAnalyzer(CommandAnalyzer commandAnalyzer) {
-		this.commandAnalyzer = commandAnalyzer;
 	}
 
 	protected TextBlockInfo createTextBlockInfo(String text){

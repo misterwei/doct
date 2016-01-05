@@ -8,7 +8,7 @@ import ognl.OgnlContext;
 
 public class TestAddCommand extends AbstractCommand{
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prevCmdCtx, Object... params)
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params)
 			throws Exception {
 		String[] args = cmdCtx.getDescriptor();
 		//args[0] add

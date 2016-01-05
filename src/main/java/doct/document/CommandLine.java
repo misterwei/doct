@@ -12,7 +12,7 @@ public class CommandLine{
 	private String id;
 	private int start;
 	private int end;
-	private List<String[]> descriptors = new ArrayList<String[]>();
+	private List<CommandDescriptor> descriptors = new ArrayList<CommandDescriptor>();
 	private TextBlockInfo textInfo;
 	
 	public CommandLine(String id,TextBlockInfo textInfo, int start, int end){
@@ -22,7 +22,7 @@ public class CommandLine{
 		this.textInfo = textInfo;
 	}
 	
-	public void addDescriptor(String[] part){
+	public void addDescriptor(CommandDescriptor part){
 		descriptors.add(part);
 	}
 	
@@ -34,7 +34,7 @@ public class CommandLine{
 		return end;
 	}
 
-	public List<String[]> getDescriptors(){
+	public List<CommandDescriptor> getDescriptors(){
 		return descriptors;
 	}
 	

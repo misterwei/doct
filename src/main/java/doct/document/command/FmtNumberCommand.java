@@ -17,7 +17,7 @@ import ognl.OgnlContext;
  */
 public class FmtNumberCommand extends AbstractCommand {
 	static Logger log = LoggerFactory.getLogger(FmtNumberCommand.class);
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prevCmdCtx, Object... params)
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params)
 			throws Exception {
 		String[] descrs = cmdCtx.getDescriptor();
 		String expr = descrs[1];

@@ -14,7 +14,7 @@ import ognl.OgnlContext;
  */
 public class XlsOffsetSaveCommand extends AbstractCommand{
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prev, Object... params) throws Exception {
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params) throws Exception {
 		String[] cmdparts = cmdCtx.getDescriptor();
 		int row_offset = XlsUtil.getRowOffset(ctx);
 		int cell_offset = XlsUtil.getCellOffset(ctx);

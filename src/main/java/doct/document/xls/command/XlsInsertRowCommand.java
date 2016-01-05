@@ -16,7 +16,7 @@ import ognl.OgnlContext;
 
 public class XlsInsertRowCommand extends AbstractCommand{
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prev, Object... params) throws Exception {
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params) throws Exception {
 		Workbook workbook = (Workbook)params[0];
 		List<CommandLine> lines = (List<CommandLine>)params[1];
 		XlsCellInfo cellInfo = (XlsCellInfo)cmdCtx.getCommandLine().getTextInfo();
@@ -29,10 +29,9 @@ public class XlsInsertRowCommand extends AbstractCommand{
 			insert_num = NumberUtils.toInt(cmdparts[1]);
 		}
 		Sheet sheet = workbook.getSheetAt(sheetIndex);
-		for(int k=0;k<insert_num;k++){
-			sheet.shiftRows(row_index+k+1, sheet.getLastRowNum(), 1,true,false);
-			updateRowIndex(lines, sheetIndex, cellInfo.getRowIndex() + 1, 1);
-		}
+		int last = sheet.getLastRowNum();
+		sheet.shiftRows(row_index+1, last + insert_num + 1, 1,true,false);
+		updateRowIndex(lines, sheetIndex, cellInfo.getRowIndex() + 1, insert_num);
 		return NO_OUTPUT;
 	}
 

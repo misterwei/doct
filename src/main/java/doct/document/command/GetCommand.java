@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import doct.document.CommandContext;
+import doct.document.CommandDescriptor;
 import ognl.Ognl;
 import ognl.OgnlContext;
 
@@ -14,7 +15,7 @@ import ognl.OgnlContext;
  */
 public class GetCommand extends AbstractCommand{
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prev, Object... params)  throws Exception {
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params)  throws Exception {
 		String expr = cmdCtx.getDescriptor()[1];
 		return Ognl.getValue(expr, ctx, ctx.getRoot());
 	}
@@ -23,9 +24,9 @@ public class GetCommand extends AbstractCommand{
 		return "get";
 	}
 
-	public List<String[]> analyze(String[] parts) {
-		List<String[]> descriptors = new ArrayList<String[]>();
-		descriptors.add(parts);
+	public List<CommandDescriptor> analyze(String[] parts) {
+		List<CommandDescriptor> descriptors = new ArrayList<CommandDescriptor>();
+		descriptors.add(new CommandDescriptor(parts));
 		return descriptors;
 	}
 

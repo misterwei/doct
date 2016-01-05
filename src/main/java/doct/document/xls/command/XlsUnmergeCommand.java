@@ -23,7 +23,7 @@ import ognl.OgnlContext;
  */
 public class XlsUnmergeCommand extends AbstractCommand {
 
-	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, CommandContext prevCmdCtx, Object... params)
+	public Object doCommand(OgnlContext ctx, CommandContext cmdCtx, Object... params)
 			throws Exception {
 		Workbook workbook = (Workbook)params[0];
 		List<CommandLine> lines = (List<CommandLine>)params[1];

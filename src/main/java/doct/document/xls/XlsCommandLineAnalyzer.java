@@ -10,6 +10,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import doct.document.BasicCommandLineAnalyzer;
+import doct.document.CommandAnalyzer;
+import doct.document.CommandDescriptor;
 import doct.document.CommandLine;
 import doct.document.TextBlockInfo;
 
@@ -27,7 +29,7 @@ public class XlsCommandLineAnalyzer extends BasicCommandLineAnalyzer{
 		this.workbook = workbook;
 	}
 	
-	public List<CommandLine> analyze() {
+	public List<CommandLine> analyze(CommandAnalyzer commandAnalyzer) {
 		int sheets = workbook.getNumberOfSheets();
 		List<CommandLine> allCommandList = new ArrayList<CommandLine>();
 		
@@ -57,15 +59,15 @@ public class XlsCommandLineAnalyzer extends BasicCommandLineAnalyzer{
 						_cellIndex =  cellIndex;
 						
 						String text = cell.getStringCellValue();
-						List<CommandLine> commandLines = analyzeText(text);
+						List<CommandLine> commandLines = analyze(commandAnalyzer, text);
 						allCommandList.addAll(commandLines);
 						
 						if(!commandLines.isEmpty()){
 							CommandLine line = commandLines.get(commandLines.size() - 1);
-							List<String[]> descrs = line.getDescriptors();
+							List<CommandDescriptor> descrs = line.getDescriptors();
 							if(!descrs.isEmpty()){
-								String[] descr = descrs.get(descrs.size() - 1);
-								if("end".equalsIgnoreCase(descr[0])){
+								CommandDescriptor descr = descrs.get(descrs.size() - 1);
+								if("end".equalsIgnoreCase(descr.getCommand())){
 									if(cellIndex == 0){
 										break TAG_ROW;
 									}else{
