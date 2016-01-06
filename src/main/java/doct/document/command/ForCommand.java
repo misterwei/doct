@@ -131,8 +131,13 @@ public class ForCommand implements DeclaredCommand{
 			return descriptors;
 		//for val in list
 		//设置 val = list[#__index__]
-		String prefix = parts[1].replace("#", "");
-		String[] newcmd = new String[]{"set", parts[1], parts[3]+"[#"+prefix+"_index]"};
+		String[] newcmd = null;
+		if(parts.length == 6){
+			newcmd = new String[]{"set", parts[1], parts[3]+"["+parts[5]+"]"};
+		}else{
+			String prefix = parts[1].replace("#", "");
+			newcmd = new String[]{"set", parts[1], parts[3]+"[#"+prefix+"_index]"};
+		}
 		descriptors.add(new CommandDescriptor(newcmd));
 		return descriptors;
 	}
