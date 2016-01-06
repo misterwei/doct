@@ -2,7 +2,7 @@
 a document (xls, ...) template engine 
 
 变量形式：
-#context
+\#context
 user.name
 
 命令格式：
