@@ -20,6 +20,8 @@ import doct.document.command.SetCommand;
 public class BasicCommandAnalyzer implements CommandAnalyzer{
 	public static final List<DeclaredCommand> BASIC_COMMANDS = new ArrayList<DeclaredCommand>();
 	
+	private static final char[] DELIMITER	= new char[]{'\'', '"'};
+	private static final char COMMAND_SPLIT = ';';
 	static{
 		BASIC_COMMANDS.add(new GetCommand());
 		BASIC_COMMANDS.add(new SetCommand());
@@ -38,9 +40,9 @@ public class BasicCommandAnalyzer implements CommandAnalyzer{
 	
 	public List<CommandDescriptor> analyze(String line) {
 		List<CommandDescriptor> descriptors = new ArrayList<CommandDescriptor>();
-		String[] cmds = line.split(";");
-		for(int i=0;i<cmds.length;i++){
-			String fullcmd = cmds[i].trim();
+		List<String> cmds = splitCommands(line);
+		for(int i=0;i<cmds.size();i++){
+			String fullcmd = cmds.get(i).trim();
 			if(fullcmd.length() == 0)
 				continue;
 			Matcher m = p.matcher(fullcmd);
@@ -89,8 +91,45 @@ public class BasicCommandAnalyzer implements CommandAnalyzer{
 		return descriptors;
 	}
 	
+	/**
+	 * 将一个命令行拆分出多个命令
+	 * @param line
+	 * @return
+	 */
+	protected List<String> splitCommands(String line){
+		List<String> commands = new ArrayList<String>();
+		//目前只考虑 ’” 两种情况，并且不能嵌套。所以按简单处理
+		Character currentDelimiter = null;
+		int start = 0;
+		for(int i=0;i<line.length();i++){
+			char c = line.charAt(i);
+			for(char de : DELIMITER){
+				if(de == c){
+					if(currentDelimiter != null && currentDelimiter.equals(c)){
+						currentDelimiter = null;
+					}else{
+						currentDelimiter = c;
+					}
+					break;
+				}
+			}
+			if(currentDelimiter == null && c == COMMAND_SPLIT){
+				String command = line.substring(start, i);
+				commands.add(command);
+				start = i + 1;
+			}
+		}
+		//最后一个命令可能没有加 ;
+		if(start < line.length()){
+			String command = line.substring(start);
+			commands.add(command);
+		}
+		
+		return commands;
+	}
 	
 	public List<DeclaredCommand> getCommands() {
 		return BASIC_COMMANDS;
 	}
+	
 }
