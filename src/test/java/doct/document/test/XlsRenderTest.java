@@ -22,7 +22,7 @@ public class XlsRenderTest extends TestCase{
 	
 	@Test
 	public void testRenderXls() throws Exception{
-		String output = "E:/test.xls";
+		String output = "D:/test.xls";
 		InputStream ins = this.getClass().getResourceAsStream("/template.xls");
 		
 //		FileInputStream ins = new FileInputStream(new File("E:/userinfo.xls"));
